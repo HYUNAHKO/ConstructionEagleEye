@@ -30,14 +30,19 @@ class AttendanceManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     }
 
     func startUpdatingLocation() {
+        print("Starting location updates")
         locationManager?.startUpdatingLocation()
         isUpdatingLocation = true
     }
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        guard let location = locations.last else { return }
+        guard let location = locations.last else {
+            print("No locations found")
+            return
+        }
         currentLocation = location
         isUpdatingLocation = false
+        print("Location updated: \(location.coordinate)")
 
         if let currentUserEmail = userModel.currentUser?.email {
             markAttendance(for: currentUserEmail)
@@ -52,14 +57,20 @@ class AttendanceManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         if status == .denied {
             locationAccessDenied = true
+            print("Location access denied")
+        } else {
+            print("Location access granted")
         }
     }
 
     func markAttendance(for email: String) {
-        guard let location = currentLocation else { return }
+        guard let location = currentLocation else {
+            print("Current location is not available")
+            return
+        }
         let distance = location.distance(from: targetLocation)
-        // Attendance is marked as true if within 500 meters
-        attendanceStatus[email] = distance <= 500
+        let isWithinRange = distance <= 500
+        attendanceStatus[email] = isWithinRange
+        print("Attendance marked for \(email): \(isWithinRange ? "Present" : "Absent")")
     }
 }
-

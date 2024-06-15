@@ -33,7 +33,7 @@ struct NPVCalculatorView: View {
                         .toolbar {
                             ToolbarItem(placement: .principal) {
                                 Text("NPV and Financial Overview")
-                                    .font(.headline) // Here you can modify the appearance but not the size directly.
+                                    .font(.headline)
                             }
                         }
                     }
@@ -77,7 +77,7 @@ class FinancialMonth: Identifiable, ObservableObject {
     let id = UUID()
     let month: Int
     @Published var directCost: Double = 0
-    @Published var indirectCost: Double = 6000 // Fixed as $6000 per month
+    @Published var indirectCost: Double = 6000 // Fixed as $6000 per month (바꿀 수 있음)
     @Published var totalCost: Double = 0
     @Published var npv: Double = 0
 

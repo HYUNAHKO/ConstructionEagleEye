@@ -4,13 +4,18 @@ import Combine
 
 struct WorkerView: View {
     @EnvironmentObject var userModel: UserModel
-    @StateObject var attendanceManager = AttendanceManager(userModel: UserModel.shared) // Adjusted to use shared instance correctly
+    @StateObject var attendanceManager = AttendanceManager(userModel: UserModel.shared)
 
     @State private var showLocationCheck = false
     @State private var attendanceStatusMessage = ""
     @State private var isSafetyChecklistPresented = false
     @State private var isLocationCheckPresented = false
     @State private var isNoticeBoardPresented = false
+
+    // 날씨 관련 상태 변수
+    @State private var openWeatherResponse: OpenWeatherResponse?
+    @State private var isLoadingWeather = true
+    var weatherDataDownload = WeatherDataDownload()
 
     var body: some View {
         NavigationView {
@@ -20,6 +25,17 @@ struct WorkerView: View {
                         Text("\(user.name) (Worker)")
                             .font(.title)
                             .padding()
+                    }
+
+                    if let weatherResponse = openWeatherResponse {
+                        WeatherView(openWeatherResponse: weatherResponse)
+                    } else if isLoadingWeather {
+                        ProgressView()
+                            .onAppear {
+                                fetchWeather()
+                            }
+                    } else {
+                        Text("날씨 정보를 불러올 수 없습니다.")
                     }
 
                     Section(header: Text("TODAY WORK").font(.headline)) {
@@ -41,12 +57,15 @@ struct WorkerView: View {
                         .padding()
                         .background(Color(.systemGray6))
                         .cornerRadius(10)
+                        .onReceive(attendanceManager.$currentLocation) { location in
+                            verifyAttendance(with: location)
+                        }
                     }
                     .padding(.horizontal)
 
                     Section(header: Text("안전 장비확인").font(.headline)) {
                         VStack {
-                            Text("안전 장비 착용은 필수입니다. 완료 후 출근 인증이 가능합니다.")
+                            Text("건설 현장에서 안전 장비 착용은 필수입니다. ")
                                 .font(.footnote)
                                 .foregroundColor(.gray)
                             Button(action: {
@@ -96,9 +115,6 @@ struct WorkerView: View {
                 .alert(isPresented: $showLocationCheck) {
                     Alert(title: Text("출근 상태"), message: Text(attendanceStatusMessage), dismissButton: .default(Text("확인")))
                 }
-                .onReceive(attendanceManager.$currentLocation) { location in
-                    verifyAttendance(with: location)
-                }
             }
         }
     }
@@ -123,6 +139,25 @@ struct WorkerView: View {
             attendanceManager.attendanceStatus[userEmail] = false
         }
         showLocationCheck = true
+        print("Attendance checked: \(attendanceStatusMessage)")
+    }
+
+    private func fetchWeather() {
+        guard let location = attendanceManager.currentLocation else {
+            isLoadingWeather = false
+            print("Location not available")
+            return
+        }
+        Task {
+            do {
+                print("Fetching weather for location: \(location)")
+                openWeatherResponse = try await weatherDataDownload.getWeather(location: location.coordinate)
+                isLoadingWeather = false
+            } catch {
+                print("Failed to fetch weather data: \(error)")
+                isLoadingWeather = false
+            }
+        }
     }
 }
 
