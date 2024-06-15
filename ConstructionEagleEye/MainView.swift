@@ -21,7 +21,7 @@ struct MainView: View {
                     .padding()
 
                 if userRole == .manager {
-                    ManagerView(user: $currentUser)
+                    ManagerView()
                 } else if userRole == .worker {
                     WorkerView()
                 }

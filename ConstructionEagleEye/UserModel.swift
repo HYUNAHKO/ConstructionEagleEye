@@ -6,6 +6,7 @@
 import Foundation
 
 class UserModel: ObservableObject {
+    static let shared = UserModel()
     @Published var currentUser: User?
 
     struct User {
@@ -21,8 +22,8 @@ class UserModel: ObservableObject {
     }
 
     var users: [User] = [
-        User(name: "홍 길동", email: "abc1234@naver.com", password: "qwerty1234", role: .manager),
-        User(name: "박 한민", email: "dazzly@gmail.com", password: "hyuna0311", role: .worker)
+        User(name: "홍길동", email: "abc1234@naver.com", password: "qwerty1234", role: .manager),
+        User(name: "박한민", email: "dazzly@gmail.com", password: "hyuna0311", role: .worker)
     ]
     
     func isValidEmail(id: String) -> Bool {

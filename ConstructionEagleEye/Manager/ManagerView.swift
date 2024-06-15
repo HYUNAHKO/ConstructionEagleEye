@@ -2,38 +2,32 @@ import SwiftUI
 
 struct ManagerView: View {
     @State private var isNPCVCalculatorPresented = false
-    @Binding var user: UserModel.User?
-    @StateObject private var attendanceManager: AttendanceManager
+    @ObservedObject var userModel = UserModel.shared // Use shared instance
+    @StateObject private var attendanceManager = AttendanceManager(userModel: UserModel.shared)
+
     @State private var showAttendanceAlert = false
     @State private var attendanceAlertMessage = ""
-    
-    init(user: Binding<UserModel.User?>) {
-            _user = user
-            let userModel = UserModel()  // Assuming UserModel isn't a singleton
-            _attendanceManager = StateObject(wrappedValue: AttendanceManager(userModel: userModel))
-        }
-    
+
     var body: some View {
         NavigationView {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
-                    if let user = user {
+                    if let user = userModel.currentUser { // Corrected from `user` to `userModel.currentUser`
                         Text("\(user.name) Manager")
                             .font(.title)
                             .bold()
-                            .padding([.top, .horizontal])
+                            .padding(.top)
                     }
                     Text("직원들의 안전보고 효율적 관리해요!")
                         .font(.subheadline)
-                        .padding(.bottom, 10)
+                        .padding()
 
                     Section(header: Text("TODAY WORK").font(.headline)) {
                         VStack(alignment: .leading, spacing: 10) {
                             Text("Concreting")
-                                .padding(.bottom, 5)
+                                .padding()
                             NavigationLink(destination: MContentView()) {
                                 Text("CPM Calculation")
-                                    .font(.footnote)
                                     .foregroundColor(.blue)
                             }
                         }
@@ -41,6 +35,7 @@ struct ManagerView: View {
                         .background(Color(.systemGray6))
                         .cornerRadius(10)
                     }
+                    .padding(.horizontal)
 
                     Section(header: Text("Worker State").font(.headline)) {
                         ForEach(UserModel().users.filter { $0.role == .worker }, id: \.email) { worker in
@@ -48,7 +43,6 @@ struct ManagerView: View {
                                 Text(worker.name)
                                 Spacer()
                                 Button(action: {
-                                    // Safely unwrap email and check attendance status
                                     if let email = worker.email, let status = attendanceManager.attendanceStatus[email] {
                                         attendanceAlertMessage = "\(worker.name)님이 출근하셨습니다."
                                     } else {
@@ -61,35 +55,38 @@ struct ManagerView: View {
                                         .underline()
                                 }
                             }
-                            .padding(.vertical, 5)
+                            .padding()
                         }
                         .alert(isPresented: $showAttendanceAlert) {
                             Alert(title: Text("출근 상태"), message: Text(attendanceAlertMessage), dismissButton: .default(Text("확인")))
                         }
                     }
+                    .padding(.horizontal)
 
-
-                    Section(header: Text("CPM Network").font(.headline)) {
-                        HStack {
-                            NavigationLink(destination: MContentView()) {
-                                Text("Calculation")
-                                    .padding()
-                                    .foregroundColor(.white)
-                                    .background(Color.blue)
-                                    .cornerRadius(10)
-                            }
-                            Spacer()
-                        }
-                    }
-
-                    Section(header: Text("NPV Calculator").font(.headline)) {
-                        NavigationLink(destination: NPVCalculatorView()) {
-                            Text("NPV Calculator")
+                    Section(header: Text("  CPM Network").font(.headline)) {
+                        NavigationLink(destination: MContentView()) {
+                            Text("Calculation")
+                                .frame(minWidth: 0, maxWidth: .infinity)
                                 .padding()
                                 .foregroundColor(.white)
                                 .background(Color.blue)
                                 .cornerRadius(10)
+                                .padding(.horizontal)
                         }
+                        .padding()
+                    }
+
+                    Section(header: Text("  NPV Calculator").font(.headline)) {
+                        NavigationLink(destination: NPVCalculatorView()) {
+                            Text("NPV Calculator")
+                                .frame(minWidth: 0, maxWidth: .infinity)
+                                .padding()
+                                .foregroundColor(.white)
+                                .background(Color.blue)
+                                .cornerRadius(10)
+                                .padding(.horizontal)
+                        }
+                        .padding()
                     }
                 }
                 .padding()

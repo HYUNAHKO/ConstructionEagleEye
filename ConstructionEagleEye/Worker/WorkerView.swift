@@ -2,8 +2,8 @@ import SwiftUI
 import CoreLocation
 
 struct WorkerView: View {
-    @EnvironmentObject var userModel: UserModel
-    @StateObject private var attendanceManager = AttendanceManager(userModel: UserModel())
+    @ObservedObject var userModel = UserModel.shared // Make sure UserModel is injected into the environment
+    @StateObject private var attendanceManager = AttendanceManager(userModel: UserModel.shared) // Adjusted to use shared instance correctly
 
     @State private var showLocationCheck = false
     @State private var attendanceStatusMessage = ""
