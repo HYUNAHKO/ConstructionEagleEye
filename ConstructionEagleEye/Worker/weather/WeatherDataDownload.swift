@@ -32,7 +32,7 @@ enum WeatherServiceError: Error, LocalizedError {
 
 class WeatherDataDownload {
 
-    private let API_KEY = "7a248c03394f2502acc106d948dc0b3b"
+    private let API_KEY = ""
 
     func getWeather(location: CLLocationCoordinate2D) async throws -> OpenWeatherResponse {
         var components = URLComponents(string: "https://api.openweathermap.org/data/2.5/weather")!
