@@ -14,7 +14,7 @@ class AttendanceManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     @Published var locationAccessDenied = false
 
     private var locationManager: CLLocationManager?
-    private var userModel: UserModel
+    private var userModel: UserModel // UserModel을 속성으로 사용
 
     // Updated coordinates for 연세대학교
     private let targetLocation = CLLocation(latitude: 37.56578, longitude: 126.9386)

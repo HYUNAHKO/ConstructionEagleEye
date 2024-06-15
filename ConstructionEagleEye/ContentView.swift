@@ -9,11 +9,11 @@ import SwiftUI
 struct ContentView: View {
     @State private var isUserLoggedIn = false
     @State private var isLoading = true
-    @State private var currentUserRole: UserModel.UserRole? // Optional to handle non-logged in state
+    @State private var currentUserRole: UserModel.UserRole?
     @State private var currentUser: UserModel.User?
-    @StateObject private var userModel = UserModel() // Initialize UserModel
-    @StateObject private var imageViewModel = ImageViewModel() // Initialize ImageViewModel
-    
+    @StateObject private var userModel = UserModel()
+    @StateObject private var imageViewModel = ImageViewModel()
+
     var body: some View {
         if isLoading {
             LoadingView()
@@ -24,12 +24,12 @@ struct ContentView: View {
                 }
         } else if let role = currentUserRole, isUserLoggedIn {
             MainView(userRole: role, isUserLoggedIn: $isUserLoggedIn, currentUser: $currentUser)
-                .environmentObject(imageViewModel) // Provide ImageViewModel to the environment
+                .environmentObject(userModel)  // Ensure the UserModel is provided
+                .environmentObject(imageViewModel)
         } else {
             LoginView(currentUserRole: $currentUserRole, isUserLoggedIn: $isUserLoggedIn, currentUser: $currentUser)
-                .environmentObject(imageViewModel) // Provide ImageViewModel to the environment
+                .environmentObject(userModel)  // Ensure the UserModel is provided
+                .environmentObject(imageViewModel)
         }
     }
 }
-
-

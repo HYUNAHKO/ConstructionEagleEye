@@ -4,6 +4,7 @@ struct MainView: View {
     let userRole: UserModel.UserRole
     @Binding var isUserLoggedIn: Bool
     @Binding var currentUser: UserModel.User?
+    @EnvironmentObject var userModel: UserModel
 
     var body: some View {
         ZStack {
@@ -22,12 +23,15 @@ struct MainView: View {
 
                 if userRole == .manager {
                     ManagerView()
+                        .environmentObject(userModel)
                 } else if userRole == .worker {
                     WorkerView()
+                        .environmentObject(userModel)
                 }
 
                 Button("Logout") {
                     isUserLoggedIn = false
+                    userModel.currentUser = nil
                 }
                 .padding()
                 .foregroundColor(.white)
@@ -36,8 +40,9 @@ struct MainView: View {
             }
         }
         .onAppear {
-            // Fetch the current user
-            currentUser = UserModel().users.first { $0.email == "현재 로그인한 사용자의 이메일" }
+            if let email = currentUser?.email {
+                userModel.fetchCurrentUser(email: email)
+            }
         }
     }
 }

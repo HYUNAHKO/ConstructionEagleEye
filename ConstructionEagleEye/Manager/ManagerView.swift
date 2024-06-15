@@ -2,12 +2,12 @@ import SwiftUI
 
 struct ManagerView: View {
     @State private var isNPCVCalculatorPresented = false
-    @ObservedObject var userModel = UserModel.shared // Use shared instance
-    @StateObject private var attendanceManager = AttendanceManager(userModel: UserModel.shared)
-
+    @EnvironmentObject var userModel: UserModel
+    @EnvironmentObject var attendanceManager: AttendanceManager
+    
     @State private var showAttendanceAlert = false
     @State private var attendanceAlertMessage = ""
-
+    
     var body: some View {
         NavigationView {
             ScrollView {
@@ -21,7 +21,7 @@ struct ManagerView: View {
                     Text("직원들의 안전보고 효율적 관리해요!")
                         .font(.subheadline)
                         .padding()
-
+                    
                     Section(header: Text("TODAY WORK").font(.headline)) {
                         VStack(alignment: .leading, spacing: 10) {
                             Text("Concreting")
@@ -36,7 +36,7 @@ struct ManagerView: View {
                         .cornerRadius(10)
                     }
                     .padding(.horizontal)
-
+                    
                     Section(header: Text("Worker State").font(.headline)) {
                         ForEach(UserModel().users.filter { $0.role == .worker }, id: \.email) { worker in
                             HStack {
@@ -62,7 +62,7 @@ struct ManagerView: View {
                         }
                     }
                     .padding(.horizontal)
-
+                    
                     Section(header: Text("  CPM Network").font(.headline)) {
                         NavigationLink(destination: MContentView()) {
                             Text("Calculation")
@@ -75,7 +75,7 @@ struct ManagerView: View {
                         }
                         .padding()
                     }
-
+                    
                     Section(header: Text("  NPV Calculator").font(.headline)) {
                         NavigationLink(destination: NPVCalculatorView()) {
                             Text("NPV Calculator")
@@ -91,7 +91,9 @@ struct ManagerView: View {
                 }
                 .padding()
                 .navigationBarTitle("Manager Mode", displayMode: .inline)
+                
             }
         }
+        
     }
 }

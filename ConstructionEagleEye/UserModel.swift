@@ -53,4 +53,10 @@ class UserModel: ObservableObject {
         users.append(newUser)
         return true
     }
+    func fetchCurrentUser(email: String) {
+        // 여기서는  이메일 주소를 인자로 받아 해당 사용자를 찾습니다.
+        // 실제 앱에서는 인증 메커니즘을 통해 이메일을 가져오거나 다른 방법을 사용할 수 있습니다.
+        currentUser = users.first { $0.email == email }
+    }
+
 }

@@ -1,9 +1,10 @@
 import SwiftUI
 import CoreLocation
+import Combine
 
 struct WorkerView: View {
-    @ObservedObject var userModel = UserModel.shared // Make sure UserModel is injected into the environment
-    @StateObject private var attendanceManager = AttendanceManager(userModel: UserModel.shared) // Adjusted to use shared instance correctly
+    @EnvironmentObject var userModel: UserModel
+    @StateObject var attendanceManager = AttendanceManager(userModel: UserModel.shared) // Adjusted to use shared instance correctly
 
     @State private var showLocationCheck = false
     @State private var attendanceStatusMessage = ""
@@ -40,9 +41,6 @@ struct WorkerView: View {
                         .padding()
                         .background(Color(.systemGray6))
                         .cornerRadius(10)
-                        .onChange(of: attendanceManager.currentLocation) { location in
-                            verifyAttendance(with: location)
-                        }
                     }
                     .padding(.horizontal)
 
@@ -95,36 +93,43 @@ struct WorkerView: View {
                     Spacer()
                 }
                 .navigationTitle("Worker Mode")
+                .alert(isPresented: $showLocationCheck) {
+                    Alert(title: Text("출근 상태"), message: Text(attendanceStatusMessage), dismissButton: .default(Text("확인")))
+                }
+                .onReceive(attendanceManager.$currentLocation) { location in
+                    verifyAttendance(with: location)
+                }
             }
         }
     }
 
     private func verifyAttendance(with location: CLLocation?) {
-            guard let location = location,
-                  let user = userModel.currentUser,
-                  let userEmail = user.email else {
-                attendanceStatusMessage = "사용자 정보를 확인할 수 없습니다."
-                showLocationCheck = true
-                return
-            }
-
-            let targetLocation = CLLocation(latitude: 37.56578, longitude: 126.9386) // 연세대학교 위치
-            let distance = location.distance(from: targetLocation)
-
-            if distance <= 500 {
-                attendanceStatusMessage = "출근 완료"
-                attendanceManager.attendanceStatus[userEmail] = true
-            } else {
-                attendanceStatusMessage = "출근 실패: 작업장 내 위치가 아닙니다"
-                attendanceManager.attendanceStatus[userEmail] = false
-            }
+        guard let location = location,
+              let user = userModel.currentUser,
+              let userEmail = user.email else {
+            attendanceStatusMessage = "사용자 정보를 확인할 수 없습니다."
             showLocationCheck = true
+            return
         }
 
+        let targetLocation = CLLocation(latitude: 37.56578, longitude: 126.9386) // 연세대학교 위치
+        let distance = location.distance(from: targetLocation)
+
+        if distance <= 500 {
+            attendanceStatusMessage = "출근 완료"
+            attendanceManager.attendanceStatus[userEmail] = true
+        } else {
+            attendanceStatusMessage = "출근 실패: 작업장 내 위치가 아닙니다"
+            attendanceManager.attendanceStatus[userEmail] = false
+        }
+        showLocationCheck = true
+    }
 }
 
 struct WorkerView_Previews: PreviewProvider {
     static var previews: some View {
-        WorkerView().environmentObject(UserModel())
+        WorkerView()
+            .environmentObject(UserModel())
+            .environmentObject(AttendanceManager(userModel: UserModel()))
     }
 }
