@@ -1,9 +1,18 @@
 import SwiftUI
 
 struct ManagerView: View {
-    @State private var isNPVCalculatorPresented = false
+    @State private var isNPCVCalculatorPresented = false
     @Binding var user: UserModel.User?
-
+    @StateObject private var attendanceManager: AttendanceManager
+    @State private var showAttendanceAlert = false
+    @State private var attendanceAlertMessage = ""
+    
+    init(user: Binding<UserModel.User?>) {
+            _user = user
+            let userModel = UserModel()  // Assuming UserModel isn't a singleton
+            _attendanceManager = StateObject(wrappedValue: AttendanceManager(userModel: userModel))
+        }
+    
     var body: some View {
         NavigationView {
             ScrollView {
@@ -12,9 +21,11 @@ struct ManagerView: View {
                         Text("\(user.name) Manager")
                             .font(.title)
                             .bold()
+                            .padding([.top, .horizontal])
                     }
                     Text("직원들의 안전보고 효율적 관리해요!")
                         .font(.subheadline)
+                        .padding(.bottom, 10)
 
                     Section(header: Text("TODAY WORK").font(.headline)) {
                         VStack(alignment: .leading, spacing: 10) {
@@ -34,46 +45,45 @@ struct ManagerView: View {
                     Section(header: Text("Worker State").font(.headline)) {
                         ForEach(UserModel().users.filter { $0.role == .worker }, id: \.email) { worker in
                             HStack {
-                                Text(worker.email)
+                                Text(worker.name)
                                 Spacer()
                                 Button(action: {
-                                    // Handle attendance check
+                                    // Safely unwrap email and check attendance status
+                                    if let email = worker.email, let status = attendanceManager.attendanceStatus[email] {
+                                        attendanceAlertMessage = "\(worker.name)님이 출근하셨습니다."
+                                    } else {
+                                        attendanceAlertMessage = "\(worker.name)님이 아직 출근하지 않았습니다."
+                                    }
+                                    showAttendanceAlert = true
                                 }) {
                                     Text("출근 체크")
                                         .foregroundColor(.blue)
                                         .underline()
                                 }
-                                Image(systemName: "exclamationmark.triangle.fill")
-                                    .foregroundColor(.red)
                             }
                             .padding(.vertical, 5)
                         }
+                        .alert(isPresented: $showAttendanceAlert) {
+                            Alert(title: Text("출근 상태"), message: Text(attendanceAlertMessage), dismissButton: .default(Text("확인")))
+                        }
                     }
+
 
                     Section(header: Text("CPM Network").font(.headline)) {
                         HStack {
                             NavigationLink(destination: MContentView()) {
-                                Text("확인하기")
+                                Text("Calculation")
                                     .padding()
                                     .foregroundColor(.white)
                                     .background(Color.blue)
                                     .cornerRadius(10)
                             }
                             Spacer()
-                            Button(action: {
-                                // Edit action
-                            }) {
-                                Text("수정하기")
-                                    .padding()
-                                    .foregroundColor(.white)
-                                    .background(Color.blue)
-                                    .cornerRadius(10)
-                            }
                         }
                     }
 
                     Section(header: Text("NPV Calculator").font(.headline)) {
-                        NavigationLink(destination: NPVCalculatorView(), isActive: $isNPVCalculatorPresented) {
+                        NavigationLink(destination: NPVCalculatorView()) {
                             Text("NPV Calculator")
                                 .padding()
                                 .foregroundColor(.white)
@@ -83,8 +93,8 @@ struct ManagerView: View {
                     }
                 }
                 .padding()
+                .navigationBarTitle("Manager Mode", displayMode: .inline)
             }
-            .navigationTitle("Worker Mode")
         }
     }
 }

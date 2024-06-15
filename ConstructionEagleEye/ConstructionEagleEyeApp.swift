@@ -6,12 +6,25 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct ConstructionEagleEyeApp: App {
+    let container: ModelContainer
+
+    init() {
+        do {
+            container = try ModelContainer(for: Activity.self)
+        } catch {
+            fatalError("Failed to initialize ModelContainer: \(error)")
+        }
+    }
+
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .modelContainer(container)
         }
     }
 }
+

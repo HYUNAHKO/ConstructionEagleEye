@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>UIAppFonts</key>
+	<array>
+		<string>감탄로드감탄체.ttf</string>
+		<string>감탄로드바탕체 Bold.ttf</string>
+		<string>감탄로드바탕체 Regular.ttf</string>
+		<string>감탄로드바탕체 Thin.ttf</string>
+		<string>감탄로드탄탄체.ttf</string>
+		<string>감탄로드돋움체 Bold.ttf</string>
+		<string>감탄로드돋움체 Regular.ttf</string>
+		<string>감탄로드돋움체 Thin.ttf</string>
+	</array>
+</dict>
+</plist>
