@@ -13,6 +13,7 @@ struct ContentView: View {
     @State private var currentUser: UserModel.User?
     @StateObject private var userModel = UserModel()
     @StateObject private var imageViewModel = ImageViewModel()
+    @EnvironmentObject var attendanceManager: AttendanceManager
 
     var body: some View {
         if isLoading {
@@ -26,10 +27,12 @@ struct ContentView: View {
             MainView(userRole: role, isUserLoggedIn: $isUserLoggedIn, currentUser: $currentUser)
                 .environmentObject(userModel)  // Ensure the UserModel is provided
                 .environmentObject(imageViewModel)
+                .environmentObject(attendanceManager)
         } else {
             LoginView(currentUserRole: $currentUserRole, isUserLoggedIn: $isUserLoggedIn, currentUser: $currentUser)
                 .environmentObject(userModel)  // Ensure the UserModel is provided
                 .environmentObject(imageViewModel)
+                .environmentObject(attendanceManager)
         }
     }
 }

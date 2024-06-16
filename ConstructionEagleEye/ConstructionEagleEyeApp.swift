@@ -11,6 +11,7 @@ import SwiftData
 @main
 struct ConstructionEagleEyeApp: App {
     let container: ModelContainer
+    @StateObject var attendanceManager = AttendanceManager(userModel: UserModel.shared)
 
     init() {
         do {
@@ -24,6 +25,8 @@ struct ConstructionEagleEyeApp: App {
         WindowGroup {
             ContentView()
                 .modelContainer(container)
+                .environmentObject(attendanceManager)
+                
         }
     }
 }

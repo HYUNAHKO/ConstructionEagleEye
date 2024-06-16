@@ -1,18 +1,14 @@
-//
-//  SafetyChecklistView.swift
-//  ConstructionEagleEye
-//
-//  Created by snlcom on 6/14/24.
-//
 import SwiftUI
 import CoreML
 import UIKit
+import Photos
 
 struct SafetyChecklistView: View {
     @ObservedObject var attendanceManager: AttendanceManager
     @ObservedObject var imageViewModel: ImageViewModel = ImageViewModel()
     @State private var checklist: [String: Bool] = ["Helmet": false, "Safety Shoes": false]
     @State private var isImagePickerShowing = false
+    @State private var showingPermissionAlert = false  // 권한 거부 경고창을 위한 상태
     @State private var image: UIImage?
 
     var body: some View {
@@ -22,7 +18,7 @@ struct SafetyChecklistView: View {
                 .padding()
 
             Button("Upload Image") {
-                isImagePickerShowing = true
+                checkPhotoLibraryAuthorization()
             }
             .padding()
             .foregroundColor(.white)
@@ -59,7 +55,33 @@ struct SafetyChecklistView: View {
         .sheet(isPresented: $isImagePickerShowing, onDismiss: loadImage) {
             ImagePicker(image: $image)
         }
+        .alert(isPresented: $showingPermissionAlert) {
+            Alert(
+                title: Text("권한 거부됨"),
+                message: Text("갤러리 접근 권한을 허용해 주세요. 설정 > 개인정보 보호에서 변경할 수 있습니다."),
+                dismissButton: .default(Text("확인"))
+            )
+        }
         .navigationTitle("Safety Checklist")
+    }
+
+    private func checkPhotoLibraryAuthorization() {
+        let status = PHPhotoLibrary.authorizationStatus()
+        if status == .authorized {
+            isImagePickerShowing = true
+        } else if status == .notDetermined {
+            PHPhotoLibrary.requestAuthorization { newStatus in
+                if newStatus == .authorized {
+                    DispatchQueue.main.async {
+                        self.isImagePickerShowing = true
+                    }
+                }
+            }
+        } else {
+            DispatchQueue.main.async {
+                self.showingPermissionAlert = true
+            }
+        }
     }
 
     private func loadImage() {

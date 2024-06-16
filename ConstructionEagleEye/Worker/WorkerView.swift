@@ -123,7 +123,7 @@ struct WorkerView: View {
         guard let location = location,
               let user = userModel.currentUser,
               let userEmail = user.email else {
-            attendanceStatusMessage = "사용자 정보를 확인할 수 없습니다."
+            attendanceStatusMessage = "출근 체크를 반드시 해주세요."
             showLocationCheck = true
             return
         }
