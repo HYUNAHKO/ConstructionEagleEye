@@ -246,4 +246,4 @@ struct NPVCalculatorView_Previews: PreviewProvider {
         NPVCalculatorView()
     }
 }
-ㄹ
+
