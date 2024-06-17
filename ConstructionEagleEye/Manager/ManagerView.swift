@@ -88,6 +88,16 @@ struct ManagerView: View {
                         }
                         .padding()
                     }
+                    
+                    Button(action: makeEmergencyCall) {
+                        Label("긴급 전화", systemImage: "phone.fill")
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .foregroundColor(.white)
+                            .background(Color.red)
+                            .cornerRadius(10)
+                    }
+                    .padding()
                 }
                 .padding()
                 .navigationBarTitle("Manager Mode", displayMode: .inline)
@@ -95,5 +105,21 @@ struct ManagerView: View {
             }
         }
         
+    }
+    private func makeEmergencyCall() { //실제로 simulator에서 전화가 걸릴 수가 없음. 실제 ios 디바이스와 연결해서만 구현되는 기능
+        guard let url = URL(string: "tel://119") else {
+            print("Invalid URL")
+            return
+        }
+        
+        if UIApplication.shared.canOpenURL(url) {
+            UIApplication.shared.open(url, options: [:]) { success in
+                if !success {
+                    print("Failed to open URL")
+                }
+            }
+        } else {
+            print("Cannot open URL, possibly due to restrictions")
+        }
     }
 }
