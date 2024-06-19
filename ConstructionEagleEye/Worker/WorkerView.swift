@@ -87,18 +87,31 @@ struct WorkerView: View {
     }
 
     private var safetyEquipmentCheckSection: some View {
-        Section(header: Text("안전 장비확인").font(.headline)) {
-            VStack {
-                Text("건설 현장에서 안전 장비 착용은 필수입니다.")
-                    .font(.footnote)
-                    .foregroundColor(.gray)
+        Section(header: Text("안전 장비 확인").font(.headline).padding()) {
+            VStack(spacing: 20) {
+                Text("현장에서 안전 장비 착용은 필수입니다.")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                    .padding(.vertical, 10)
+                    .frame(maxWidth: .infinity, alignment: .center)
+
                 Button(action: {
                     isSafetyChecklistPresented = true
                 }) {
-                    Image(systemName: "checkmark.seal")
-                        .resizable()
-                        .frame(width: 100, height: 100)
-                        .foregroundColor(.blue)
+                    Label {
+                        Text("안전 장비 확인")
+                            .foregroundColor(.white)
+                            .padding(.vertical, 8) // 상하 패딩 추가
+                            .frame(width: 200) // 버튼 너비 조정
+                    } icon: {
+                        Image(systemName: "checkmark.shield")
+                            .imageScale(.large) // 아이콘 크기 조정
+                            .foregroundColor(.white)
+                    }
+                    .padding() // Label 주변에 패딩 추가
+                    .background(LinearGradient(gradient: Gradient(colors: [Color.blue, Color.purple]), startPoint: .leading, endPoint: .trailing))
+                    .cornerRadius(10)
+                    .shadow(radius: 5)
                 }
                 .sheet(isPresented: $isSafetyChecklistPresented) {
                     SafetyChecklistView(attendanceManager: attendanceManager)
@@ -106,36 +119,55 @@ struct WorkerView: View {
                 }
             }
             .padding()
-            .background(Color(.systemGray6))
-            .cornerRadius(10)
+            .frame(width: 300) // 섹션 전체 너비 조정
+            .background(Color(.systemGray5))
+            .cornerRadius(12)
+            .shadow(color: .gray, radius: 5, x: 0, y: 2)
         }
         .padding(.horizontal)
     }
 
+
+
+
     private var noticeBoardSection: some View {
-        Section(header: Text("공지사항 게시판").font(.headline)) {
-            VStack {
-                Text("공지사항을 확인해주세요.")
-                    .font(.footnote)
-                    .foregroundColor(.gray)
+        Section(header: Text("공지사항 게시판").font(.headline).padding()) {
+            VStack(spacing: 20) {
+                Text("작업 시작 전 공지사항 꼭 확인해주세요.")
+                    .font(.subheadline) // 조금 더 크고 눈에 띄는 폰트 스타일로 변경
+                    .foregroundColor(.secondary) // 보다 읽기 쉬운 색상으로 변경
+                    .padding(.vertical, 10)
+
                 Button(action: {
                     isNoticeBoardPresented = true
                 }) {
-                    Image(systemName: "list.bullet")
-                        .resizable()
-                        .frame(width: 100, height: 100)
-                        .foregroundColor(.blue)
+                    HStack {
+                        Image(systemName: "list.bullet.rectangle")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 40, height: 40)
+                            .foregroundColor(.white)
+                        Text("공지사항 보기")
+                            .fontWeight(.medium)
+                            .foregroundColor(.white)
+                    }
+                    .padding()
+                    .background(LinearGradient(gradient: Gradient(colors: [Color.blue, Color.purple]), startPoint: .leading, endPoint: .trailing))
+                    .cornerRadius(10)
+                    .shadow(radius: 5)
                 }
                 .sheet(isPresented: $isNoticeBoardPresented) {
                     NoticeBoardView()
                 }
             }
             .padding()
-            .background(Color(.systemGray6))
-            .cornerRadius(10)
+            .background(Color(.systemGray5)) // 밝은 회색 배경
+            .cornerRadius(12)
+            .shadow(color: .gray, radius: 5, x: 0, y: 2)
         }
         .padding(.horizontal)
     }
+
 
     private func verifyAttendance(with location: CLLocation?) {
             guard let location = location,
