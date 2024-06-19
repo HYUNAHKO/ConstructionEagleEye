@@ -8,24 +8,21 @@ class AttendanceManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     @Published var locationAccessDenied = false
 
     private var locationManager: CLLocationManager?
-    private var userModel: UserModel // 내부적으로 사용되는 UserModel
-
-    // Updated coordinates for 연세대학교
+    private var userModel: UserModel
     private let targetLocation = CLLocation(latitude: 37.56578, longitude: 126.9386)
 
     init(userModel: UserModel) {
         self.userModel = userModel
         super.init()
-        locationManager = CLLocationManager()
-        locationManager?.delegate = self
-        locationManager?.requestWhenInUseAuthorization()
-        locationManager?.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager?.startUpdatingLocation()
+        self.locationManager = CLLocationManager()
+        self.locationManager?.delegate = self
+        self.locationManager?.requestWhenInUseAuthorization()
+        self.locationManager?.desiredAccuracy = kCLLocationAccuracyBest
+        self.locationManager?.startUpdatingLocation()
     }
 
-    // Public 접근자로 사용자의 이메일을 제공
     var currentUserEmail: String? {
-            return userModel.currentUser?.email
+        return userModel.currentUser?.email
     }
 
     func startUpdatingLocation() {
@@ -35,7 +32,7 @@ class AttendanceManager: NSObject, ObservableObject, CLLocationManagerDelegate {
 
     func requestSingleLocationUpdate() {
         isUpdatingLocation = true
-        locationManager?.requestLocation() // 단일 위치 업데이트 요청
+        locationManager?.requestLocation()
     }
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {

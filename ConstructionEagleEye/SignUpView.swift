@@ -61,7 +61,13 @@ struct SignUpView: View {
                     .background(Color.blue)
                     .cornerRadius(10)
                     .alert(isPresented: $showAlert) {
-                        Alert(title: Text("Sign Up Status"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
+                        Alert(title: Text("Sign Up Status"), message: Text(alertMessage), dismissButton: .default(Text("OK")) {
+                            if alertMessage == "회원 가입 성공! 로그인을 진행해주세요." {
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                                    isUserLoggedIn = true
+                                }
+                            }
+                        })
                     }
                 }
                 .padding(.top, 20)  // Adding top padding to avoid overlap with the header
@@ -107,7 +113,6 @@ struct SignUpView: View {
         if userModel.registerUser(name: name, email: email, password: password, role: role) {
             alertMessage = "회원 가입 성공! 로그인을 진행해주세요."
             showAlert = true
-            isUserLoggedIn = true
         } else {
             alertMessage = "이미 등록된 이메일이거나 회원 가입에 실패했습니다."
             showAlert = true

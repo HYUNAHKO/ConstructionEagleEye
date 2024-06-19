@@ -5,6 +5,7 @@ struct MainView: View {
     @Binding var isUserLoggedIn: Bool
     @Binding var currentUser: UserModel.User?
     @EnvironmentObject var userModel: UserModel
+    @StateObject var locationManager = LocationManager()
 
     var body: some View {
         ZStack {
@@ -24,9 +25,11 @@ struct MainView: View {
                 if userRole == .manager {
                     ManagerView()
                         .environmentObject(userModel)
+                        .environmentObject(locationManager)
                 } else if userRole == .worker {
                     WorkerView()
                         .environmentObject(userModel)
+                        .environmentObject(locationManager)
                 }
 
                 Button("Logout") {

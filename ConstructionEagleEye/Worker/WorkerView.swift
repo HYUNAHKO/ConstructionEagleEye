@@ -1,11 +1,12 @@
 import SwiftUI
 import CoreLocation
 import Combine
+import CoreLocationUI
 
 struct WorkerView: View {
     @EnvironmentObject var userModel: UserModel
     @StateObject var attendanceManager = AttendanceManager(userModel: UserModel.shared)
-
+    @EnvironmentObject var locationManager: LocationManager
     @State private var showLocationCheck = false
     @State private var attendanceStatusMessage = ""
     @State private var isSafetyChecklistPresented = false
@@ -19,20 +20,39 @@ struct WorkerView: View {
             ScrollView {
                 VStack(spacing: 20) {
                     if let user = userModel.currentUser {
-                        Text("\(user.name) (Worker)")
-                            .font(.title)
-                            .padding()
+                        Text("\(user.name) (Worker)").font(.title).padding()
                     }
 
-                    if let weatherResponse = openWeatherResponse {
-                        WeatherView(openWeatherResponse: weatherResponse)
-                    } else if isLoadingWeather {
-                        ProgressView()
-                            .onAppear {
-                                fetchWeather()
+                    if let location = locationManager.location {
+                        if let  openWeatherResponse = openWeatherResponse {
+                                       WeatherView(openWeatherResponse: openWeatherResponse)
+                        } else {
+                                ProgressView()
+                                    .task {
+                                    openWeatherResponse = try? await weatherDataDownload.getWeather(location: location)
+                                }
+                                   }
+                    } else if !locationManager.locationPermissionGranted {
+                        VStack {
+                            Text("Location permission not granted.")
+                                .foregroundColor(.red)
+                                .padding()
+                            LocationButton(.shareCurrentLocation) {
+                                locationManager.requestLocation()
                             }
+                            .cornerRadius(10)
+                            .foregroundColor(.white)
+                            .padding()
+                        }
                     } else {
-                        Text("날씨 정보를 불러올 수 없습니다.")
+                        Text("Unable to load weather data.")
+                        Button("Retry") {
+                            fetchWeather()
+                        }
+                        .padding()
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(8)
                     }
 
                     workSection
@@ -40,7 +60,7 @@ struct WorkerView: View {
                     noticeBoardSection
 
                     Button(action: makeEmergencyCall) {
-                        Label("긴급 전화", systemImage: "phone.fill")
+                        Label("Emergency Call", systemImage: "phone.fill")
                             .frame(maxWidth: .infinity)
                             .padding()
                             .foregroundColor(.white)
@@ -51,9 +71,12 @@ struct WorkerView: View {
 
                     Spacer()
                 }
+                .onChange(of: locationManager.location) { _ in
+                    fetchWeather()
+                }
                 .navigationTitle("Worker Mode")
                 .alert(isPresented: $showLocationCheck) {
-                    Alert(title: Text("출근 상태"), message: Text(attendanceStatusMessage), dismissButton: .default(Text("확인")))
+                    Alert(title: Text("Attendance Status"), message: Text(attendanceStatusMessage), dismissButton: .default(Text("OK")))
                 }
             }
         }
@@ -100,6 +123,7 @@ struct WorkerView: View {
                 }) {
                     Label {
                         Text("안전 장비 확인")
+                            .fontWeight(.medium)
                             .foregroundColor(.white)
                             .padding(.vertical, 8) // 상하 패딩 추가
                             .frame(width: 200) // 버튼 너비 조정
@@ -191,20 +215,21 @@ struct WorkerView: View {
             showLocationCheck = true
         }
 
-    private func fetchWeather() {
-        guard let location = attendanceManager.currentLocation else {
-            isLoadingWeather = false
-            print("Location not available")
-            return
-        }
-        Task {
-            do {
-                print("Fetching weather for location: \(location)")
-                openWeatherResponse = try await weatherDataDownload.getWeather(location: location.coordinate)
-                isLoadingWeather = false
-            } catch {
-                print("Failed to fetch weather data: \(error)")
-                isLoadingWeather = false
+    func fetchWeather() {
+            guard let location = locationManager.location else {
+                print("Location not available")
+                return
+            }
+            isLoadingWeather = true
+            Task {
+                do {
+                    let response = try await weatherDataDownload.getWeather(location: location)
+                    openWeatherResponse = response
+                    isLoadingWeather = false
+                } catch {
+                    print("Failed to fetch weather: \(error)")
+                    isLoadingWeather = false
+                }
             }
         }
     }
@@ -226,7 +251,7 @@ struct WorkerView: View {
         }
     }
 
-}
+
 
 struct WorkerView_Previews: PreviewProvider {
     static var previews: some View {

@@ -35,32 +35,28 @@ struct WeatherView: View {
     }
 
     var body: some View {
-        let weather = Weather(response: openWeatherResponse)
+            let weather = Weather(response: openWeatherResponse)
 
-        VStack {
-            Text(weather.location)
-                .font(.largeTitle)
+            VStack {
+                Text(weather.location)
+                    .font(.title2)
+                    .padding()
+                HStack{
+                    Text(weather.temperature)
+                        .font(.system(size: 30))
+                        .bold()
+                    
+                    Text(iconList[weather.main] ?? "?")
+                        .font(.title)
+                        .padding()
+                }
+                HStack {
+                    Text("Discomfort Index : \(weather.discomfortIndex)")
+                        .font(.title3)
+                    Text(emoji)
+                        .font(.title2)
+                }
                 .padding()
-
-            Text(weather.temperature)
-                .font(.system(size: 75))
-                .bold()
-
-            Text(iconList[weather.main] ?? "?")
-                .font(.largeTitle)
-                .padding()
-
-            Text(weather.description)
-                .font(.largeTitle)
-                .padding()
-
-            Text("Discomfort Index: \(weather.discomfortIndex)")
-                .font(.title)
-                .padding()
-
-            Text(emoji)
-                .font(.largeTitle)
-                .padding()
-        }
+            }
     }
 }

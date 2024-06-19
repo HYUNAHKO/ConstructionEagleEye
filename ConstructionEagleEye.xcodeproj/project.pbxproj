@@ -79,9 +79,6 @@
 		661F305E2C1C89CB004D12DB /* AttendanceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 661F305D2C1C89CB004D12DB /* AttendanceManager.swift */; };
 		661F305F2C1C89CB004D12DB /* AttendanceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 661F305D2C1C89CB004D12DB /* AttendanceManager.swift */; };
 		661F30602C1C89CB004D12DB /* AttendanceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 661F305D2C1C89CB004D12DB /* AttendanceManager.swift */; };
-		661F30622C1C8A17004D12DB /* LocationCheckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 661F30612C1C8A17004D12DB /* LocationCheckView.swift */; };
-		661F30632C1C8A17004D12DB /* LocationCheckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 661F30612C1C8A17004D12DB /* LocationCheckView.swift */; };
-		661F30642C1C8A17004D12DB /* LocationCheckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 661F30612C1C8A17004D12DB /* LocationCheckView.swift */; };
 		661F30662C1C8A86004D12DB /* NoticeBoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 661F30652C1C8A86004D12DB /* NoticeBoardView.swift */; };
 		661F30672C1C8A86004D12DB /* NoticeBoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 661F30652C1C8A86004D12DB /* NoticeBoardView.swift */; };
 		661F30682C1C8A86004D12DB /* NoticeBoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 661F30652C1C8A86004D12DB /* NoticeBoardView.swift */; };
@@ -103,6 +100,7 @@
 		661F30842C1DAD96004D12DB /* OpenWeatherResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 661F30832C1DAD96004D12DB /* OpenWeatherResponse.swift */; };
 		661F30852C1DAD96004D12DB /* OpenWeatherResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 661F30832C1DAD96004D12DB /* OpenWeatherResponse.swift */; };
 		661F30862C1DAD96004D12DB /* OpenWeatherResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 661F30832C1DAD96004D12DB /* OpenWeatherResponse.swift */; };
+		661F30C62C230C24004D12DB /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 661F30C52C230C24004D12DB /* LocationManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -159,7 +157,6 @@
 		661F30512C1C3B08004D12DB /* SafetyChecklistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafetyChecklistView.swift; sourceTree = "<group>"; };
 		661F30552C1C79B8004D12DB /* ImageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewModel.swift; sourceTree = "<group>"; };
 		661F305D2C1C89CB004D12DB /* AttendanceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttendanceManager.swift; sourceTree = "<group>"; };
-		661F30612C1C8A17004D12DB /* LocationCheckView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationCheckView.swift; sourceTree = "<group>"; };
 		661F30652C1C8A86004D12DB /* NoticeBoardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeBoardView.swift; sourceTree = "<group>"; };
 		661F306A2C1CA2C6004D12DB /* NPVCalculatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NPVCalculatorView.swift; sourceTree = "<group>"; };
 		661F306E2C1CB4A9004D12DB /* Resnet50.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = Resnet50.mlmodel; sourceTree = "<group>"; };
@@ -167,6 +164,7 @@
 		661F30772C1DACC1004D12DB /* WeatherDataDownload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherDataDownload.swift; sourceTree = "<group>"; };
 		661F307B2C1DAD5A004D12DB /* WeatherView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherView.swift; sourceTree = "<group>"; };
 		661F30832C1DAD96004D12DB /* OpenWeatherResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenWeatherResponse.swift; sourceTree = "<group>"; };
+		661F30C52C230C24004D12DB /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -304,7 +302,6 @@
 			children = (
 				661F30762C1DACA9004D12DB /* weather */,
 				661F30492C1C2A55004D12DB /* WorkerView.swift */,
-				661F30612C1C8A17004D12DB /* LocationCheckView.swift */,
 				661F305D2C1C89CB004D12DB /* AttendanceManager.swift */,
 				661F30512C1C3B08004D12DB /* SafetyChecklistView.swift */,
 				661F30722C1D6435004D12DB /* ImagePicker.swift */,
@@ -327,6 +324,7 @@
 			children = (
 				661F30772C1DACC1004D12DB /* WeatherDataDownload.swift */,
 				661F30832C1DAD96004D12DB /* OpenWeatherResponse.swift */,
+				661F30C52C230C24004D12DB /* LocationManager.swift */,
 				661F307B2C1DAD5A004D12DB /* WeatherView.swift */,
 			);
 			path = weather;
@@ -501,7 +499,6 @@
 				661F30042C148A73004D12DB /* Activity.swift in Sources */,
 				661F300C2C148BB5004D12DB /* MContentView.swift in Sources */,
 				661F2FC72C1166D7004D12DB /* MainView.swift in Sources */,
-				661F30622C1C8A17004D12DB /* LocationCheckView.swift in Sources */,
 				661F2F972C084A28004D12DB /* ConstructionEagleEyeApp.swift in Sources */,
 				661F306B2C1CA2C6004D12DB /* NPVCalculatorView.swift in Sources */,
 				661F2FC92C11760C004D12DB /* LoadingView.swift in Sources */,
@@ -513,6 +510,7 @@
 				661F30522C1C3B08004D12DB /* SafetyChecklistView.swift in Sources */,
 				661F30182C148C5F004D12DB /* ProjectView.swift in Sources */,
 				661F30842C1DAD96004D12DB /* OpenWeatherResponse.swift in Sources */,
+				661F30C62C230C24004D12DB /* LocationManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -528,7 +526,6 @@
 				661F30052C148A73004D12DB /* Activity.swift in Sources */,
 				661F30532C1C3B08004D12DB /* SafetyChecklistView.swift in Sources */,
 				661F30112C148C1B004D12DB /* EditActivityView.swift in Sources */,
-				661F30632C1C8A17004D12DB /* LocationCheckView.swift in Sources */,
 				661F30702C1CB4A9004D12DB /* Resnet50.mlmodel in Sources */,
 				661F2FA82C084A2B004D12DB /* ConstructionEagleEyeTests.swift in Sources */,
 				661F30792C1DACC1004D12DB /* WeatherDataDownload.swift in Sources */,
@@ -563,7 +560,6 @@
 				661F304C2C1C2A55004D12DB /* WorkerView.swift in Sources */,
 				661F307E2C1DAD5A004D12DB /* WeatherView.swift in Sources */,
 				661F30712C1CB4A9004D12DB /* Resnet50.mlmodel in Sources */,
-				661F30642C1C8A17004D12DB /* LocationCheckView.swift in Sources */,
 				661F30542C1C3B08004D12DB /* SafetyChecklistView.swift in Sources */,
 				661F30122C148C1B004D12DB /* EditActivityView.swift in Sources */,
 				661F30222C14B0C3004D12DB /* PersistentContainer.swift in Sources */,
