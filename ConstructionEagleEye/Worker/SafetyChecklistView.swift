@@ -12,6 +12,7 @@ struct SafetyChecklistView: View {
     @State private var image: UIImage?
     @State private var feedbackMessage = ""
     @State private var isFeedbackPresented = false
+    @State private var alertTitle = ""  // Local alert title state
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -55,7 +56,7 @@ struct SafetyChecklistView: View {
             .cornerRadius(10)
             .alert(isPresented: $isFeedbackPresented) {
                 Alert(
-                    title: Text("안전 장비 체크 완료"),
+                    title: Text(alertTitle),
                     message: Text(feedbackMessage),
                     dismissButton: .default(Text("확인"))
                 )
@@ -84,12 +85,12 @@ struct SafetyChecklistView: View {
                     DispatchQueue.main.async {
                         self.isImagePickerShowing = true
                     }
+                } else {
+                    showingPermissionAlert = true
                 }
             }
         } else {
-            DispatchQueue.main.async {
-                self.showingPermissionAlert = true
-            }
+            showingPermissionAlert = true
         }
     }
 
@@ -110,17 +111,25 @@ struct SafetyChecklistView: View {
     }
 
     private func submitChecklist() {
-        if checklist.values.allSatisfy({ $0 }) {
-            if let user = UserModel.shared.currentUser {
-                feedbackMessage = "\(user.name)님의 안전 장비가 확인되었습니다. 안전한 건설 작업하세요!"
+            print("Submit checklist called")
+            if checklist.values.allSatisfy({ $0 }) {
+                print("All items checked")
+                if let user = UserModel.shared.currentUser {
+                    feedbackMessage = "\(user.name)님의 안전 장비가 확인되었습니다. 안전한 건설 작업하세요!"
+                    alertTitle = "안전 장비 체크 완료"
+                    print("User name: \(user.name)")
+                } else {
+                    feedbackMessage = "사용자 정보를 불러올 수 없습니다."
+                    alertTitle = "오류"
+                    print("User info not available")
+                }
+                isFeedbackPresented = true
+                print("Alert should be presented now")
             } else {
-                feedbackMessage = "사용자 정보를 불러올 수 없습니다."
+                feedbackMessage = "안전 장비 체크리스트를 완료해주세요."
+                alertTitle = "체크리스트 미완료"
+                isFeedbackPresented = true
+                print("Checklist not complete")
             }
-            isFeedbackPresented = true
-        } else {
-            feedbackMessage = "안전 장비 체크리스트를 완료해주세요."
-            isFeedbackPresented = true
         }
-    }
-
 }

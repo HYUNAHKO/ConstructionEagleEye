@@ -102,6 +102,7 @@ struct WorkerView: View {
                 }
                 .sheet(isPresented: $isSafetyChecklistPresented) {
                     SafetyChecklistView(attendanceManager: attendanceManager)
+                        .environmentObject(userModel)
                 }
             }
             .padding()
