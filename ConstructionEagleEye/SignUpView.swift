@@ -11,7 +11,7 @@ struct SignUpView: View {
     @State private var showAlert = false
     @State private var alertMessage = ""
 
-    @ObservedObject var userModel: UserModel // Pass UserModel
+    @ObservedObject var userModel: UserModel 
 
     var body: some View {
         NavigationView {
