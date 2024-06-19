@@ -2,7 +2,7 @@ import SwiftUI
 
 struct SignUpView: View {
     @Binding var isUserLoggedIn: Bool
-    @State private var name = "" // 이름 필드 추가
+    @State private var name = ""
     @State private var email = ""
     @State private var password = ""
     @State private var confirmPassword = ""
@@ -11,59 +11,62 @@ struct SignUpView: View {
     @State private var showAlert = false
     @State private var alertMessage = ""
 
-    @ObservedObject var userModel: UserModel 
+    @ObservedObject var userModel: UserModel
 
     var body: some View {
         NavigationView {
-            VStack(spacing: 20) {
-                TextField("Name", text: $name) // 이름 필드 추가
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .padding()
-                
-                TextField("Email", text: $email)
-                    .autocapitalization(.none)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .padding()
-
-                SecureField("Password", text: $password)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .padding()
-
-                SecureField("Confirm Password", text: $confirmPassword)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .padding()
-
-                Text("이메일 형식: example@domain.com")
-                    .font(.footnote)
-                    .foregroundColor(.gray)
-                
-                Text("비밀번호 형식: 최소 8자 이상, 알파벳과 숫자 포함")
-                    .font(.footnote)
-                    .foregroundColor(.gray)
-                
-                Toggle(isOn: $isManager) {
-                    Text("Register as Manager")
-                }
-                .padding()
-
-                if isManager {
-                    TextField("Certification Number", text: $certificationNumber)
+            ScrollView {  // Wrapping the content in a ScrollView
+                VStack(spacing: 20) {
+                    TextField("Name", text: $name)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                         .padding()
-                }
 
-                Button("Create Account") {
-                    signUp()
+                    TextField("Email", text: $email)
+                        .autocapitalization(.none)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .padding()
+
+                    SecureField("Password", text: $password)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .padding()
+
+                    SecureField("Confirm Password", text: $confirmPassword)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .padding()
+
+                    Text("이메일 형식: example@domain.com")
+                        .font(.footnote)
+                        .foregroundColor(.gray)
+
+                    Text("비밀번호 형식: 최소 8자 이상, 알파벳과 숫자 포함")
+                        .font(.footnote)
+                        .foregroundColor(.gray)
+
+                    Toggle(isOn: $isManager) {
+                        Text("Register as Manager")
+                    }
+                    .padding()
+
+                    if isManager {
+                        TextField("Certification Number", text: $certificationNumber)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .padding()
+                    }
+
+                    Button("Create Account") {
+                        signUp()
+                    }
+                    .padding()
+                    .foregroundColor(.white)
+                    .background(Color.blue)
+                    .cornerRadius(10)
+                    .alert(isPresented: $showAlert) {
+                        Alert(title: Text("Sign Up Status"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
+                    }
                 }
-                .padding()
-                .foregroundColor(.white)
-                .background(Color.blue)
-                .cornerRadius(10)
-                .alert(isPresented: $showAlert) {
-                    Alert(title: Text("Sign Up Status"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
-                }
+                .padding(.top, 20)  // Adding top padding to avoid overlap with the header
             }
-            .navigationBarTitle("Sign Up")
+            .navigationBarTitle("Sign Up", displayMode: .inline)  // Making the navigation bar title inline to save space
         }
     }
 
