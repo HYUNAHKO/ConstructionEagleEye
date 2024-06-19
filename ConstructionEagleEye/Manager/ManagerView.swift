@@ -88,7 +88,17 @@ struct ManagerView: View {
                         }
                         .padding()
                     }
-                    
+                    Section(header: Text("  Work Report").font(.headline)){
+                        NavigationLink(destination: ReportWritingView()) {
+                            Text("Submit")
+                                .frame(minWidth: 0, maxWidth: .infinity)
+                                .padding()
+                                .foregroundColor(.white)
+                                .background(Color.blue)
+                                .cornerRadius(10)
+                                .padding()
+                        }
+                    }
                     Button(action: makeEmergencyCall) {
                         Label("긴급 전화", systemImage: "phone.fill")
                             .frame(maxWidth: .infinity)

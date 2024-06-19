@@ -30,7 +30,7 @@ struct WorkerView: View {
                                 ProgressView()
                                     .task {
                                     openWeatherResponse = try? await weatherDataDownload.getWeather(location: location)
-                                }
+                                    }
                                    }
                     } else if !locationManager.locationPermissionGranted {
                         VStack {
