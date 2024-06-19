@@ -9,7 +9,6 @@ struct WorkerView: View {
     @State private var showLocationCheck = false
     @State private var attendanceStatusMessage = ""
     @State private var isSafetyChecklistPresented = false
-    @State private var isLocationCheckPresented = false
     @State private var isNoticeBoardPresented = false
     @State private var openWeatherResponse: OpenWeatherResponse?
     @State private var isLoadingWeather = true
@@ -40,7 +39,6 @@ struct WorkerView: View {
                     safetyEquipmentCheckSection
                     noticeBoardSection
 
-                    // 긴급 전화 버튼
                     Button(action: makeEmergencyCall) {
                         Label("긴급 전화", systemImage: "phone.fill")
                             .frame(maxWidth: .infinity)
@@ -139,27 +137,26 @@ struct WorkerView: View {
     }
 
     private func verifyAttendance(with location: CLLocation?) {
-        guard let location = location,
-              let user = userModel.currentUser,
-              let userEmail = user.email else {
-            attendanceStatusMessage = "출근 체크를 반드시 해주세요."
+            guard let location = location,
+                  let user = userModel.currentUser,
+                  let userEmail = user.email else {
+                attendanceStatusMessage = "출근 체크를 반드시 해주세요."
+                showLocationCheck = true
+                return
+            }
+
+            let targetLocation = CLLocation(latitude: 37.56578, longitude: 126.9386) // 연세대학교 위치
+            let distance = location.distance(from: targetLocation)
+
+            if distance <= 500 {
+                attendanceStatusMessage = "출근 완료"
+                attendanceManager.attendanceStatus[userEmail] = true
+            } else {
+                attendanceStatusMessage = "출근 실패: 작업장 내 위치가 아닙니다"
+                attendanceManager.attendanceStatus[userEmail] = false
+            }
             showLocationCheck = true
-            return
         }
-
-        let targetLocation = CLLocation(latitude: 37.56578, longitude: 126.9386) // 연세대학교 위치
-        let distance = location.distance(from: targetLocation)
-
-        if distance <= 500 {
-            attendanceStatusMessage = "출근 완료"
-            attendanceManager.attendanceStatus[userEmail] = true
-        } else {
-            attendanceStatusMessage = "출근 실패: 작업장 내 위치가 아닙니다"
-            attendanceManager.attendanceStatus[userEmail] = false
-        }
-        showLocationCheck = true
-        print("Attendance checked: \(attendanceStatusMessage)")
-    }
 
     private func fetchWeather() {
         guard let location = attendanceManager.currentLocation else {

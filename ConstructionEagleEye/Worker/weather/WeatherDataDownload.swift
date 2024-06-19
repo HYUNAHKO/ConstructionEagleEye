@@ -32,7 +32,7 @@ enum WeatherServiceError: Error, LocalizedError {
 
 class WeatherDataDownload {
 
-    private let API_KEY = ""
+    private let API_KEY = "7a248c03394f2502acc106d948dc0b3b"
 
     func getWeather(location: CLLocationCoordinate2D) async throws -> OpenWeatherResponse {
         var components = URLComponents(string: "https://api.openweathermap.org/data/2.5/weather")!
@@ -44,35 +44,21 @@ class WeatherDataDownload {
         ]
 
         guard let url = components.url else {
-            print("Invalid URL")
-            throw WeatherServiceError.invalidURL
+                    throw WeatherServiceError.invalidURL
+                }
+
+                let urlRequest = URLRequest(url: url)
+                let (data, response) = try await URLSession.shared.data(for: urlRequest)
+       
+                guard (response as? HTTPURLResponse)?.statusCode == 200 else {
+                    throw WeatherServiceError.invalidResponse
+                }
+
+                do {
+                    let decodedData = try JSONDecoder().decode(OpenWeatherResponse.self, from: data)
+                    return decodedData
+                } catch {
+                    throw WeatherServiceError.decodingError
+                }
+            }
         }
-
-        print("URL: \(url.absoluteString)")
-
-        let urlRequest = URLRequest(url: url)
-        let (data, response) = try await URLSession.shared.data(for: urlRequest)
-
-        guard let httpResponse = response as? HTTPURLResponse else {
-            print("Invalid response")
-            throw WeatherServiceError.invalidResponse
-        }
-
-        print("Response status code: \(httpResponse.statusCode)")
-
-        guard httpResponse.statusCode == 200 else {
-            print("Failed response with status code: \(httpResponse.statusCode)")
-            throw WeatherServiceError.invalidResponse
-        }
-
-        do {
-            let decodedData = try JSONDecoder().decode(OpenWeatherResponse.self, from: data)
-            print("Weather data fetched successfully")
-            return decodedData
-        } catch {
-            print("Decoding error: \(error)")
-            throw WeatherServiceError.decodingError
-        }
-    }
-}
-

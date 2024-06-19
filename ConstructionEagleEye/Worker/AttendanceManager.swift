@@ -1,9 +1,3 @@
-//
-//  AttendanceManager.swift
-//  ConstructionEagleEye
-//
-//  Created by snlcom on 6/14/24.
-//
 import Foundation
 import CoreLocation
 
@@ -14,7 +8,7 @@ class AttendanceManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     @Published var locationAccessDenied = false
 
     private var locationManager: CLLocationManager?
-    private var userModel: UserModel // UserModel을 속성으로 사용
+    private var userModel: UserModel // 내부적으로 사용되는 UserModel
 
     // Updated coordinates for 연세대학교
     private let targetLocation = CLLocation(latitude: 37.56578, longitude: 126.9386)
@@ -29,22 +23,30 @@ class AttendanceManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         locationManager?.startUpdatingLocation()
     }
 
+    // Public 접근자로 사용자의 이메일을 제공
+    var currentUserEmail: String? {
+            return userModel.currentUser?.email
+    }
+
     func startUpdatingLocation() {
-        print("Starting location updates")
-        locationManager?.startUpdatingLocation()
         isUpdatingLocation = true
+        locationManager?.startUpdatingLocation()
+    }
+
+    func requestSingleLocationUpdate() {
+        isUpdatingLocation = true
+        locationManager?.requestLocation() // 단일 위치 업데이트 요청
     }
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last else {
-            print("No locations found")
+            isUpdatingLocation = false
             return
         }
         currentLocation = location
         isUpdatingLocation = false
-        print("Location updated: \(location.coordinate)")
 
-        if let currentUserEmail = userModel.currentUser?.email {
+        if let currentUserEmail = currentUserEmail {
             markAttendance(for: currentUserEmail)
         }
     }

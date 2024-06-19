@@ -71,23 +71,23 @@ struct LoginView: View {
     
     func handleLogin() {
         if !userModel.isValidEmail(id: email) {
-            alertMessage = "이메일 형식을 확인해 주세요"
+            alertMessage = "이메일 형식을 확인해 주세요."
             showAlert = true
             return
         }
-        
+
         if !userModel.isValidPassword(pwd: password) {
-            alertMessage = "비밀번호 형식을 확인해 주세요"
+            alertMessage = "비밀번호 형식을 확인해 주세요."
             showAlert = true
             return
         }
-        
+
         if let user = userModel.loginCheck(id: email, pwd: password) {
+            currentUserRole = user.role
+            currentUser = user
             alertMessage = "로그인 성공"
             showAlert = true
-            DispatchQueue.main.async {
-                currentUserRole = user.role  // UserRole 직접 할당
-                currentUser = user
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                 isUserLoggedIn = true
             }
         } else {
@@ -95,4 +95,5 @@ struct LoginView: View {
             showAlert = true
         }
     }
+
 }
